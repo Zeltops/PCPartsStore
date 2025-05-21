@@ -15,7 +15,7 @@ PCPartsStore is a straightforward e-commerce app for computer components. It let
 - C# IDE: Visual Studio or Jetbrains Rider
 
 ## Installation
-1. Clone the repository: `git clone https://github.com/Exonault/PCPartsStore`.
+1. Clone the repository: `git clone https://github.com/Zeltops/PCPartsStore`.
 2. Open the project inside your IDE.
 3. In the `appsettings.json` in the field `ApplicationDb` add your database connection string.
 4. In the terminal execute `dotnet restore` to install any missing dependencies.
