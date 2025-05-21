@@ -1,0 +1,10 @@
+﻿@{
+    ViewData["Title"] = "AdminPage";
+}
+
+<div class="row flex-row">
+    <partial name="AdminPageBase" view-data='@new ViewDataDictionary(ViewData) { { "PageTitle", ViewData["Title"] } }'/>
+    @* <div class="col-lg-9 col-sm-auto d-flex justify-content-center"> *@
+    @*     <h1>Hello <span class="text-decoration-underline underline">@User.Identity.Name</span>!</h1> *@
+    @* </div> *@
+</div>

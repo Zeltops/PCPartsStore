@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Order placed";
+}
+
+<h1>Order placed</h1>
+<div class="d-flex justify-content-center">
+    <div class="text-center">
+        <i class="bi bi-check-circle text-success" style="font-size: 15em"></i>
+        <p class="fs-3">Your order has been successfully placed!</p>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        cartCount = 0;
+        if (cartCount===0){
+            $("#cart-products-count").text("");
+            $(".cart-dropdown .dropdown-menu").css("display", "none");
+        }
+    </script>
+}

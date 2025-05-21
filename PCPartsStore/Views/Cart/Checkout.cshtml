@@ -1,0 +1,90 @@
+﻿@model PCPartsStore.ViewModels.CheckoutViewModel;
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<h1>Checkout</h1>
+<form method="post">
+    <div class="row d-flex justify-content-center flex-sm-column flex-md-row">
+        <div class="col-md-4 w-auto mb-md-auto mb-sm-1 d-flex addresses-container">
+            <fieldset class="p-2 border border-1 rounded d-flex w-100" style="border-color: #b3d4fc !important">
+                <legend class="w-auto float-none">Pick an address</legend>
+                <div class="col-md-auto d-flex flex-column gap-3 ms-auto p-3" style="margin-right: 3em">
+                    @foreach (var address in Model.UserAddress)
+                    {
+                        <div class="row user-address cart-user-address rounded">
+                            <div class="col-3 pe-3 d-flex justify-content-center align-items-center">
+                                <input class="form-check-input" type="radio" name="addressId" value="@address.Id">
+                            </div>
+                            <div class="col-9 row d-flex justify-content-center">
+                                <div class="d-flex justify-content-center mt-1 mb-2">
+                                    <span>@address.ShortName</span>
+                                </div>
+                                <div class=" text-center w-100" style="word-break: break-word">
+                                    <span>@address.Street</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <a asp-action="AddAddress" asp-controller="Account" asp-route-returnUrl="/Cart/Checkout" class="text-dark">
+                        <div class="row user-address-add rounded text-center">
+                            <i class="bi bi-plus-circle"></i>
+                        </div>
+                    </a>
+                </div>
+            </fieldset>
+        </div>
+        <div class="row flex-row col-md-4 ms-sm-auto me-sm-auto ms-md-0 me-md-0 total-container">
+            <div class="text-center border border-1 rounded" style="border-color: #b3d4fc !important;">
+                <div class="mb-sm-1 mt-md-1">
+                    <h1>Total price:</h1>
+                    <h2>@Model.Cart.Sum(i => i.Price)</h2>
+                    <button type="submit" class="btn btn-primary">Place order</button>
+                </div>
+            </div>
+        </div>
+        <div class="row border border-1 col-md-7 mt-2">
+            <table class="table">
+                <thead>
+                <tr class="text-end">
+                    <th scope="col"></th>
+                    <th scope="col" colspan="2"></th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Price</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var entity in Model.Cart)
+                {
+                    <tr class="text-end">
+                        <td>
+                            <img src="@entity.Product.ProductImage.ImagePath" width="100px" height="auto" style="object-fit: contain" class="d-flex ms-auto me-auto"/>
+                        </td>
+                        <td colspan="2">@entity.Product.Name</td>
+                        <td>
+                            <div class="d-flex gap-2 justify-content-end">
+                                <span>@entity.Quantity</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1 justify-content-end">
+                                <span>@entity.Price</span>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>
+
+@section Scripts
+{
+    <script>
+        $(".user-address").on("click", function() {
+            $(this).find("input[type='radio']").prop("checked", true);
+        });
+        $(".user-address input[type='radio']").first().prop("checked", true);
+    </script>
+}

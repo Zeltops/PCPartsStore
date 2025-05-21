@@ -1,0 +1,107 @@
+﻿@model HashSet<PCPartsStore.ViewModels.CartViewModel>;
+@{
+    ViewData["Title"] = "Cart";
+}
+
+<h1>Cart</h1>
+@if (Model.Count > 0)
+{
+    <div class="row flex-sm-column flex-md-row d-flex justify-content-center">
+        <div class="col-md-6 col-sm-auto">
+            <table class="table">
+                <thead>
+                <tr class="text-end">
+                    <th scope="col"></th>
+                    <th scope="col" colspan="2"></th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col" class="pe-4">Price</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var entity in Model)
+                {
+                    <tr class="text-end">
+                        <td>
+                            <img src="@entity.Product.ProductImage.ImagePath" width="100px" height="auto" style="object-fit: contain" class="d-flex ms-auto me-auto"/>
+                        </td>
+                        <td colspan="2">@entity.Product.Name</td>
+                        <td>
+                            <div class="d-flex gap-2 justify-content-end">
+                                <i class="bi bi-dash-circle-fill cart-button-quantity-subtract" data-id="@entity.Product.Id" style="font-size: 18px"></i>
+                                <span>@entity.Quantity</span>
+                                <i class="bi bi-plus-circle-fill cart-button-quantity-add" data-id="@entity.Product.Id" style="font-size: 18px"></i>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1 justify-content-end">
+                                <span>@entity.Price</span>
+                                <i class="bi bi-dash-circle-fill text-danger ms-2 cart-button-delete" data-id="@entity.Product.Id" style="font-size: 15px"></i>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-auto text-end cart-price-container">
+            <div class="text-center border border-1 rounded h-100" style="border-color: #b3d4fc !important;">
+                <h1>Total price:</h1>
+                <h2>@Model.Sum(i => i.Price)</h2>
+                <a class="btn btn-primary" asp-action="Checkout">Checkout</a>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <h1>Cart is empty!</h1>
+}
+
+@section Scripts
+{
+    <script>
+        $(document).on("click", ".cart-button-quantity-subtract", function (){
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("SubtractProductQuantity", "Cart")",
+                data: {id: $(this).data("id")},
+                success: function (res){
+                    $("main").html(res);
+                    $("#cart-products-count").text(--cartCount);
+                    if (cartCount===0){
+                        $("#cart-products-count").text("");
+                    }
+                }
+            });
+        })
+        $(document).on("click", ".cart-button-quantity-add", function (){
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("AddProductQuantity", "Cart")",
+                data: {id: $(this).data("id")},
+                success: function (res){
+                    $("main").html(res);
+                    $("#cart-products-count").text(++cartCount);
+                    if (cartCount===0){
+                        $("#cart-products-count").text("");
+                    }
+                }
+            });
+        })
+        $(document).on("click", ".cart-button-delete", function (){
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("RemoveProductFromCart", "Cart")",
+                data: {id: $(this).data("id")},
+                success: function (res){
+                    $("main").html(res.partialView);
+                    cartCount = res.quantity;
+                    $("#cart-products-count").text(cartCount);
+                    if (cartCount===0){
+                        $("#cart-products-count").text("");
+                    }
+                }
+            });
+        })
+    </script>
+}

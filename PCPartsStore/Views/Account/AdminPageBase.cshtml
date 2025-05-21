@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "AdminPage";
+}
+
+@{
+    string? pageTitle = ViewData["Title"] as string ?? "Default title";
+
+    switch (pageTitle)
+    {
+        case "AdminPage":
+            pageTitle = "Admin page";
+            break;
+
+        default:
+            pageTitle = (ViewData["PageTitle"] ?? ViewData["Title"]) as string;
+            break;
+    }
+}
+
+<h1>@pageTitle</h1>
+<div class="row flex-column col-lg-2 col-sm-auto me-5">
+    <hr style="width: 100%" class="ms-2"/>
+    <div class="row flex-column gap-2">
+        <a class="col-lg-5 col-sm-auto text-dark text-decoration-none fs-3" asp-controller="Product" asp-action="Index">
+            Products
+        </a>
+        @* <a class="col-lg-5 col-sm-auto text-dark text-decoration-none fs-3" asp-controller="Product" asp-action="Categories"> *@
+        @*     Categories *@
+        @* </a> *@
+    </div>
+</div>

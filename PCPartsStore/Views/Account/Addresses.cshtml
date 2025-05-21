@@ -1,0 +1,36 @@
+﻿@model List<PCPartsStore.Entities.Address>;
+@{
+    ViewData["Title"] = "Addresses";
+}
+
+<div class="row flex-row">
+    <partial name="UserPageBase" view-data='@new ViewDataDictionary(ViewData) { { "PageTitle", ViewData["Title"] } }'/>
+    <div class="col-lg-9 col-sm-auto d-flex justify-content-center">
+        <div class="d-flex flex-column gap-3">
+            @foreach (var address in Model)
+            {
+                <div class="user-address rounded">
+                    <div class="d-flex justify-content-center mb-2">
+                     @address.ShortName
+                    </div>
+                    <div class="d-flex justify-content-center text-center">
+                     @address.Street
+                    </div>
+                    <div class="d-flex justify-content-center mb-2 mt-1">
+                        <form method="post" asp-action="EditAddress">
+                            <input type="hidden" name="id" value="@address.Id"/>
+                            <button type="submit" class="bi bi-pencil-square btn btn-primary" id="button-edit-address">
+                                &nbsp;Edit
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+            <a asp-action="AddAddress" class="text-dark">
+                <div class="user-address-add rounded d-flex justify-content-center">
+                    <i class="bi bi-plus-circle"></i>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>

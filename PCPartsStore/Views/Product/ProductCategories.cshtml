@@ -1,0 +1,54 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using PCPartsStore.Entities
+@using PCPartsStore.Repository.Interfaces
+@inject SignInManager<IdentityUser> SignInManager;
+@inject IProductCategoryRepository ProductCategoryRepository;
+
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+<h1>Product categories</h1>
+<div class="row flex-row">
+    <div class="col-lg-12 col-sm-auto d-flex justify-content-center flex-xxl-nowrap flex-wrap">
+        <div class="d-flex flex-wrap gap-2">
+            @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+            {
+                <a asp-action="Add" asp-controller="Product"
+                   class="product-box-add nav-link text-dark col-auto d-flex align-items-center justify-content-center bg-white border border-3">
+                    <i class="bi bi-plus-circle"></i>
+                    <span class="category-box-tooltip">Add a new product</span>
+                </a>
+            }
+            <a asp-action="Cpu" asp-controller="Product"
+               class="product-box-add nav-link text-dark col-auto d-flex align-items-center justify-content-center bg-white border border-3">
+                <i class="bi bi-cpu"></i>
+                <span class="category-box-tooltip">Go to CPU products</span>
+            </a>
+            <a asp-action="Gpu" asp-controller="Product"
+               class="product-box-add nav-link text-dark col-auto d-flex align-items-center justify-content-center bg-white border border-3">
+                <i class="bi bi-gpu-card"></i>
+                <span class="category-box-tooltip">Go to GPU products</span>
+            </a>
+            <a asp-action="Ram" asp-controller="Product"
+               class="product-box-add nav-link text-dark col-auto d-flex align-items-center justify-content-center bg-white border border-3">
+                <i class="bi bi-memory"></i>
+                <span class="category-box-tooltip">Go to Ram products</span>
+            </a>
+            <a asp-action="Motherboard" asp-controller="Product"
+               class="product-box-add nav-link text-dark col-auto d-flex align-items-center justify-content-center bg-white border border-3">
+                <i class="bi bi-motherboard"></i>
+                <span class="category-box-tooltip" style="font-size: 14px">Go to Motherboard products</span>
+            </a>
+            <a asp-action="Other" asp-controller="Product"
+               class="product-box-add nav-link text-dark col-auto d-flex align-items-center justify-content-center bg-white border border-3">
+                <i class="bi bi-collection"></i>
+                <span class="category-box-tooltip" style="font-size: 14px">Go to Other products</span>
+            </a>
+
+        </div>
+    </div>
+</div>
+    

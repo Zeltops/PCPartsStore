@@ -1,0 +1,251 @@
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model PCPartsStore.Paging.PaginatedList<PCPartsStore.Entities.Product>;
+@inject SignInManager<IdentityUser> signInManager;
+@{
+    ViewData["Title"] = "Gpu";
+}
+
+<h1>Gpu</h1>
+@if (TempData["ShowProductSuccessfullyAddedToDb"]!=null && (bool)TempData["ShowProductSuccessfullyAddedToDb"] == true)
+{
+    <div class="modal fade" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Product added to database</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Product with id "@TempData["ProductId"]" has been successfully added to the database!
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else if (TempData["ShowProductSuccessfullyEdited"]!=null && (bool)TempData["ShowProductSuccessfullyEdited"] == true)
+{
+    <div class="modal fade" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Product edited</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Product with id "@TempData["ProductId"]" has been successfully edited!
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<div class="modal fade" tabindex="-1" id="modal-delete" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete confirmation</h5>
+            </div>
+            <div class="modal-body">
+                <span class="text-danger">Are you sure you want to delete product with id "<span id="product-del-id"></span>"?</span>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button class="btn btn-danger" id="delete-product-button-confirm">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="product-row row">
+    <div class="col-lg-9 d-flex flex-wrap">
+        @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+        {
+            <a asp-action="Add" asp-controller="Product" asp-route-product="Gpu" class="product-box-add nav-link text-dark col-auto d-flex align-items-center justify-content-center bg-white border border-3">
+                <i class="bi bi-plus-circle"></i>
+                <span class="category-box-tooltip">Add a new GPU product</span>
+            </a>
+            @foreach (var product in Model)
+            {
+                <div class="product-box admin bg-white border border-3 gx-1 d-flex align-items-center">
+                    <a class="text-decoration-none" asp-action="Gpu" asp-controller="Product" asp-route-id="@product.Id">
+                        <img class="product-image" src="@product.ProductImage.ImagePath">
+                        <div class="text-dark text-center">@product.Name</div>
+                        <div class="d-flex flex-column align-self-start mt-5 product-actions">
+                            <a class="bi bi-pencil-square text-white btn btn-primary mb-2" asp-action="Edit" asp-route-id="@product.Id"></a>
+                            <button type="button" class="bi bi-trash text-white btn btn-danger delete-product-button" value="@product.Id" data-bs-toggle="modal" data-bs-target="#modal-delete"></button>
+                        </div>
+                    </a>
+                </div>
+            }
+            <div class="col-12 mt-3 mb-3 d-flex gap-2 justify-content-center">
+                @if (Model.PageIndex != 1)
+                {
+                    <a class="text-decoration-none text-dark btn btn-light border border-1 bi bi-arrow-left-circle" asp-action="Gpu" asp-route-page="@(Model.PageIndex - 1)"></a>
+                }
+                @if (Model.CurrentRange > Model.InitialRange)
+                {
+                    if (Model.CurrentRange <= Model.TotalPages || Model.PageIndex <= Model.CurrentRange)
+                    {
+                        <span class="align-self-center">...</span>
+                    }
+                    for (int i = Model.CurrentRange - 9; i <= Model.CurrentRange - (Model.CurrentRange - Model.TotalPages); i++)
+                    {
+                        if (i == (Model.CurrentRange - 9) + 10)
+                        {
+                            break;
+                        }
+                        if (i == Model.CurrentRange - 9 && !Context.Request.QueryString.HasValue)
+                        {
+                            <a class="page-button text-decoration-none text-light btn btn-dark border border-1" asp-action="Gpu" asp-route-page="@i">@i</a>
+                        }
+                        else if (Context.Request.Query["page"] == i.ToString() && Context.Request.QueryString.HasValue)
+                        {
+                            <a class="page-button text-decoration-none text-light btn btn-dark border border-1" asp-action="Gpu" asp-route-page="@i">@i</a>
+                        }
+                        else
+                        {
+                            <a class="page-button text-decoration-none text-dark btn btn-light border border-1" asp-action="Gpu" asp-route-page="@i">@i</a>
+                        }
+                    }
+                    if (Model.TotalPages > Model.CurrentRange)
+                    {
+                        <span class="align-self-center">...</span>
+                    }
+                }
+                else
+                {
+                    for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        if (i == (Model.CurrentRange - 9) + 10)
+                        {
+                            break;
+                        }
+                        if (i == 1 && !Context.Request.QueryString.HasValue)
+                        {
+                            <a class="page-button text-decoration-none text-light btn btn-dark border border-1" asp-action="Gpu" asp-route-page="@i">@i</a>
+                        }
+                        else if (Context.Request.Query["page"] == i.ToString() && Context.Request.QueryString.HasValue)
+                        {
+                            <a class="page-button text-decoration-none text-light btn btn-dark border border-1" asp-action="Gpu" asp-route-page="@i">@i</a>
+                        }
+                        else
+                        {
+                            <a class="page-button text-decoration-none text-dark btn btn-light border border-1" asp-action="Gpu" asp-route-page="@i">@i</a>
+                        }
+                    }
+                    if (Model.TotalPages > Model.CurrentRange)
+                    {
+                        <span class="align-self-center">...</span>
+                    }
+                }
+                @if (Model.PageIndex != Model.TotalPages && Model.TotalPages > 1)
+                {
+                    <a class="text-decoration-none text-dark btn btn-light border border-1 bi bi-arrow-right-circle" asp-action="Gpu" asp-route-page="@(Model.PageIndex + 1)"></a>
+                }
+            </div>
+        }
+        else
+        {
+            @foreach (var product in Model)
+            {
+                <div class="product-box bg-white border border-3 gx-1 d-flex align-items-center">
+                    <a class="text-decoration-none" asp-action="Gpu" asp-controller="Product" asp-route-id="@product.Id">
+                        <img class="product-image" src="@product.ProductImage.ImagePath">
+                        <div class="text-dark text-center">@product.Name</div>
+                    </a>
+                </div>
+            }
+            <div class="col-12 mt-3 mb-3 d-flex gap-2 justify-content-center">
+                @if (Model.PageIndex != 1)
+                {
+                    <a class="text-decoration-none text-dark btn btn-light border border-1 bi bi-arrow-left-circle" asp-action="Gpu" asp-route-page="@(Model.PageIndex - 1)"></a>
+                }
+                @if (Model.CurrentRange > Model.InitialRange)
+                {
+                    if (Model.CurrentRange <= Model.TotalPages || Model.PageIndex <= Model.CurrentRange)
+                    {
+                        <span class="align-self-center">...</span>
+                    }
+                    for (int i = Model.CurrentRange - 9; i <= Model.CurrentRange - (Model.CurrentRange - Model.TotalPages); i++)
+                    {
+                        if (i == (Model.CurrentRange - 9) + 10)
+                        {
+                            break;
+                        }
+                        if (i == Model.CurrentRange - 9 && !Context.Request.QueryString.HasValue)
+                        {
+                            <a class="page-button text-decoration-none text-light btn btn-dark border border-1" asp-action="Gpu" asp-route-page="@i">@i</a>
+                        }
+                        else if (Context.Request.Query["page"] == i.ToString() && Context.Request.QueryString.HasValue)
+                        {
+                            <a class="page-button text-decoration-none text-light btn btn-dark border border-1" asp-action="Gpu" asp-route-page="@i">@i</a>
+                        }
+                        else
+                        {
+                            <a class="page-button text-decoration-none text-dark btn btn-light border border-1" asp-action="Gpu" asp-route-page="@i">@i</a>
+                        }
+                    }
+                    if (Model.TotalPages > Model.CurrentRange)
+                    {
+                        <span class="align-self-center">...</span>
+                    }
+                }
+                else
+                {
+                    for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        if (i == (Model.CurrentRange - 9) + 10)
+                        {
+                            break;
+                        }
+                        if (i == 1 && !Context.Request.QueryString.HasValue)
+                        {
+                            <a class="page-button text-decoration-none text-light btn btn-dark border border-1" asp-action="Gpu" asp-route-page="@i">@i</a>
+                        }
+                        else if (Context.Request.Query["page"] == i.ToString() && Context.Request.QueryString.HasValue)
+                        {
+                            <a class="page-button text-decoration-none text-light btn btn-dark border border-1" asp-action="Gpu" asp-route-page="@i">@i</a>
+                        }
+                        else
+                        {
+                            <a class="page-button text-decoration-none text-dark btn btn-light border border-1" asp-action="Gpu" asp-route-page="@i">@i</a>
+                        }
+                    }
+                    if (Model.TotalPages > Model.CurrentRange)
+                    {
+                        <span class="align-self-center">...</span>
+                    }
+                }
+                @if (Model.PageIndex != Model.TotalPages && Model.TotalPages > 1)
+                {
+                    <a class="text-decoration-none text-dark btn btn-light border border-1 bi bi-arrow-right-circle" asp-action="Gpu" asp-route-page="@(Model.PageIndex + 1)"></a>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        setTimeout(function(){
+            $('.modal').not("#modal-delete").modal('hide')
+        }, 1500);
+    </script>
+    <script>
+        $(".delete-product-button").on("click", function (){
+           $("#modal-delete").show();
+           $("#product-del-id").text($(this).val())
+           let clickedDelButtonVal = $(this).val();
+           $("#delete-product-button-confirm").on("click", function (){
+               $.ajax({
+                  type: "DELETE",
+                  url: "@Url.Action("Delete")",
+                  data: {id: clickedDelButtonVal},
+                  success: function (res){
+                      window.location.href = res;
+                  }
+             });
+           })
+        });
+    </script>
+}

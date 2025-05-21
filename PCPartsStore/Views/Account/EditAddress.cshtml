@@ -1,0 +1,78 @@
+﻿@model PCPartsStore.Entities.Address;
+@{
+    ViewData["Title"] = "EditAddress";
+}
+
+<h1>Edit Address</h1>
+<div class="d-flex justify-content-center align-items-center mt-3" id="edit-address-container">
+    <form class="shadow-sm rounded bg-white" method="post" id="edit-address-form">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div>
+            <input asp-for="Id" type="hidden">
+        </div>
+        <div class="mb-3">
+            <div>
+                <span asp-validation-for="ShortName" class="text-danger"></span>
+            </div>
+            <label asp-for="ShortName" class="form-label"></label>
+            <input asp-for="ShortName" class="form-control">
+        </div>
+        <div class="mb-3">
+            <div>
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <label asp-for="PhoneNumber" class="form-label"></label>
+            <input asp-for="PhoneNumber" class="form-control">
+        </div>
+        <div class="mb-3">
+            <div>
+                <span asp-validation-for="Recipient" class="text-danger"></span>
+            </div>
+            <label asp-for="Recipient" class="form-label"></label>
+            <input asp-for="Recipient" class="form-control">
+        </div>
+        <div class="mb-3">
+            <div>
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+            <label asp-for="City" class="form-label"></label>
+            <select asp-for="City" class="form-select">
+                <option value="Sofia">Sofia (1000)</option>
+                <option value="Plovdiv">Plovdiv (4000)</option>
+                <option value="Burgas">Burgas (8000)</option>
+                <option value="Varna">Varna (9000)</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <div>
+                <span asp-validation-for="Street" class="text-danger"></span>
+            </div>
+            <label asp-for="Street" class="form-label"></label>
+            <input asp-for="Street" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary" asp-action="EditAddress" asp-route-shortName="@Model.ShortName">Edit address</button>
+        <button type="button" id="button-delete-address" class="btn btn-danger align-self-end">Delete this address</button>
+    </form>
+</div>
+
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial"/>
+    <script>
+        $("#button-delete-address").on("click", function (){
+            $.ajax({
+                type: "DELETE",
+                url: "@Url.Action("DeleteAddress")",
+                data: {id: $("#Id").val()},
+                success: function (res){
+                    window.location.href = res;
+                },
+                error: function (){
+                    alert("ERROR 401: UNAUTHORIZED");
+                    window.location.reload();
+                }
+            });
+        })
+    </script>
+}

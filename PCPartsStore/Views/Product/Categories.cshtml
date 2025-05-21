@@ -1,0 +1,37 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using PCPartsStore.Entities
+@using PCPartsStore.Repository.Interfaces
+@inject SignInManager<IdentityUser> SignInManager;
+@inject IProductCategoryRepository ProductCategoryRepository;
+
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+<div class="row flex-row">
+    <partial name="~/Views/Account/AdminPageBase.cshtml"
+             view-data='@new ViewDataDictionary(ViewData) { { "PageTitle", ViewData["Title"] } }'/>
+    <div class="col-lg-9 col-sm-auto d-flex justify-content-center flex-xxl-nowrap flex-wrap">
+        <div class="d-flex flex-wrap gap-2">
+            @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+            {
+                <a asp-action="" asp-controller="Product"
+                   class="product-box-add nav-link text-dark col-auto d-flex align-items-center justify-content-center bg-white border border-3">
+                    <i class="bi bi-plus-circle"></i>
+                    <span class="category-box-tooltip">Add a new category</span>
+                </a>
+            }
+        
+            @foreach (ProductCategory productCategory in ProductCategoryRepository.GetProductCategories())
+            {
+                <a asp-controller="Product" asp-action="Products" asp-route-productCategory="@productCategory.Name"
+                   class="product-box-add nav-link text-dark col-auto d-flex align-items-center justify-content-center bg-white border border-3">
+                    <h3>@productCategory.Name</h3>
+                    <span class="category-box-tooltip">Go to @productCategory.Name products</span>
+                </a>
+            }
+        </div>
+    </div>
+</div>

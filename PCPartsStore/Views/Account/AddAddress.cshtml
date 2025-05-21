@@ -1,0 +1,57 @@
+﻿@model PCPartsStore.Entities.Address;
+@{
+    ViewData["Title"] = "AddAddress";
+}
+
+<h1 class="text-center">Add Address</h1>
+<div class="d-flex justify-content-center align-items-center mt-3" id="add-address-container">
+    <form class="shadow-sm rounded bg-white" method="post" id="add-address-form">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="mb-3">
+            <div>
+                <span asp-validation-for="ShortName" class="text-danger"></span>
+            </div>
+            <label asp-for="ShortName" class="form-label"></label>
+            <input asp-for="ShortName" class="form-control">
+        </div>
+        <div class="mb-3">
+            <div>
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <label asp-for="PhoneNumber" class="form-label"></label>
+            <input asp-for="PhoneNumber" class="form-control">
+        </div>
+        <div class="mb-3">
+            <div>
+                <span asp-validation-for="Recipient" class="text-danger"></span>
+            </div>
+            <label asp-for="Recipient" class="form-label"></label>
+            <input asp-for="Recipient" class="form-control">
+        </div>
+        <div class="mb-3">
+            <div>
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+            <label asp-for="City" class="form-label"></label>
+            <select asp-for="City" class="form-select">
+                <option value="Sofia">Sofia (1000)</option>
+                <option value="Plovdiv">Plovdiv (4000)</option>
+                <option value="Burgas">Burgas (8000)</option>
+                <option value="Varna">Varna (9000)</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <div>
+                <span asp-validation-for="Street" class="text-danger"></span>
+            </div>
+            <label asp-for="Street" class="form-label"></label>
+            <input asp-for="Street" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Add address</button>
+    </form>
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial"/>
+}

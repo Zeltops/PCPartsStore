@@ -1,0 +1,370 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using PCPartsStore.Entities
+@using PCPartsStore.Extensions
+@using PCPartsStore.Repository.Interfaces
+@using PCPartsStore.ViewModels
+
+@inject SignInManager<IdentityUser> SignInManager;
+@inject UserManager<IdentityUser> UserManager;
+@inject IProductCategoryRepository ProductCategoryRepository
+@inject IProductImageRepository ProductImageRepository;
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"] - PCPartsStore</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/PCPartsStore.styles.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body>
+<header>
+    @if (UserManager.Users.Any() == false)
+    {
+        <div class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Can't proceed</h5>
+                    </div>
+                    <div class="modal-body">
+                        <span class="text-danger">You haven't completed the first time setup!</span>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-primary" data-bs-dismiss="modal">Complete first time setup</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <nav class="navbar navbar-expand-lg navbar-light bg-white mb-3">
+        <div class="container-fluid">
+            <div class="row align-items-center first-container w-100 g-0">
+                <div class="col-auto me-auto">
+                    <a class="navbar-brand ms-1" asp-area="" asp-controller="Home" asp-action="Index">PC Parts Store</a>
+                </div>
+                <div class="col-auto nav-container-inner-icon-phone">
+                    <ul class="navbar-nav nav-font">
+                        <li class="nav-item d-flex align-items-center">
+                            <i class="bi bi-telephone-fill"></i>
+                            <a href="tel:0888888888" class="nav-link text-dark ms-1 ps-0">08&nbsp;88888888</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="row g-0 collapse navbar-collapse">
+                    <ul class="navbar-nav">
+                        <div class="dropdown pe-3">
+                            <button class="btn btn-light border-0 bg-transparent dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">Browse
+                            </button>
+                            <ul class="dropdown-menu main-menu">
+                                <div class="btn-group dropend">
+                                    @* <a class="nav-link text-dark dropdown-toggle" asp-action="Index" *@
+                                    @*    asp-controller="Product"> *@
+                                    @*     Products *@
+                                    @* </a> *@
+                                    @* <ul class="dropdown-menu sub-menu text-center"> *@
+                                    @*     @foreach (ProductCategory category in ProductCategoryRepository.GetProductCategories()) *@
+                                    @*     { *@
+                                    @*         <li> *@
+                                    @*             <a class="nav-link text dark" asp-action="Products" asp-route-productCategory="@category.Name" *@
+                                    @*                asp-controller="Product">@category.Name</a> *@
+                                    @*         </li> *@
+                                    @*     } *@
+                                    @* </ul> *@
+                                    <a class="nav-link text-dark dropdown-toggle" asp-action="ProductCategories"
+                                       asp-controller="Product">
+                                        Products
+                                    </a>
+                                    <ul class="dropdown-menu sub-menu text-center">
+                                        <li>
+                                            <a class="nav-link text-dark" asp-action="Cpu"
+                                               asp-controller="Product">CPU</a>
+                                        </li>
+                                        <li>
+                                            <a class="nav-link text-dark" asp-action="Gpu"
+                                               asp-controller="Product">GPU</a>
+                                        </li>
+                                        <li>
+                                            <a class="nav-link text-dark" asp-action="Ram"
+                                               asp-controller="Product">RAM</a>
+                                        </li>
+                                        <li>
+                                            <a class="nav-link text-dark" asp-action="Motherboard"
+                                               asp-controller="Product">Motherboards</a>
+                                        </li>
+                                        <li>
+                                            <a class="nav-link text-dark" asp-action="Other"
+                                               asp-controller="Product">Other</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </ul>
+                        </div>
+                        <div class="col-auto w-100 flex-shrink-1 d-none d-lg-block d-xl-block d-xxl-block">
+                            <form method="GET" asp-action="Search" asp-controller="Home">
+                                <li class="nav-item d-flex align-items-center search-bar">
+                                    <i class="bi bi-search position-absolute ms-1"></i>
+                                    <input type="text" name="searchString" class="form-control flex-grow-1"
+                                           placeholder="Search products">
+                                </li>
+                            </form>
+                        </div>
+                        <div class="col-auto order-sm-first order-lg-last">
+                            @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <div class="dropdown user-dropdown">
+                                        <div class="user-profile-container d-flex justify-content-center"
+                                             data-bs-toggle="dropdown">
+                                            <i class="bi bi-person-circle" id="user-profile-icon"></i>
+                                        </div>
+                                        <ul class="dropdown-menu text-center">
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark" asp-area="" asp-controller="Account"
+                                                   asp-action="AdminPage">Admin</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark" asp-area="" asp-controller="Account"
+                                                   asp-action="UserPage">User</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <form method="post" asp-action="Logout" asp-controller="Account"
+                                                      class="d-flex justify-content-center">
+                                                    <button type="submit" class="nav-link text-dark btn btn-link">Sign
+                                                        out
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            }
+                            else if (SignInManager.IsSignedIn(User) && User.IsInRole("User"))
+                            {
+                                <li class="nav-item">
+                                    <div class="dropdown user-dropdown">
+                                        <div class="user-profile-container d-flex justify-content-center"
+                                             data-bs-toggle="dropdown">
+                                            <i class="bi bi-person-circle" id="user-profile-icon"></i>
+                                        </div>
+                                        <ul class="dropdown-menu text-center">
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark" asp-area="" asp-controller="Account"
+                                                   asp-action="UserPage">User</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <form method="post" asp-controller="Account" asp-action="Logout"
+                                                      class="d-flex justify-content-center">
+                                                    <button type="submit" class="nav-link text-dark btn btn-link">
+                                                        Sign out
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account"
+                                       asp-action="Login" id="login-link">Login</a>
+                                </li>
+                            }
+                        </div>
+                        <div class="col-auto order-sm-first order-lg-5">
+                            <li class="nav-item">
+                                <div class="dropdown cart-dropdown">
+                                    <a asp-controller="Cart" asp-action="Cart" class="text-dark text-decoration-none">
+                                        <div class="cart-container d-flex justify-content-center">
+                                            <i class="bi bi-cart-fill" id="cart-icon"></i>
+                                            <div class="align-self-end">
+                                                <span id="cart-products-count"></span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-start">
+                                        <div class="d-flex flex-column gap-3 align-items-center p-2">
+                                            @{
+                                                if (Context.Session.GetComplexData<HashSet<CartViewModel>>("Cart") != null)
+                                                {
+                                                    var productImages = (ProductImageRepository.GetProductImages()).ToList();
+                                                    @foreach (var entity in Context.Session.GetComplexData<HashSet<CartViewModel>>("Cart"))
+                                                    {
+                                                        entity.Product.ProductImage = productImages.FirstOrDefault(i => i.Id == entity.Product.ProductImageId);
+                                                        <div class="cart-item d-flex align-items-center w-100">
+                                                            <img src="@entity.Product.ProductImage.ImagePath"
+                                                                 width="75px" height="auto">
+                                                            <p class="m-0 w-25 text-break pe-1">@entity.Product.Name</p>
+                                                            <div class="d-flex gap-2 justify-content-center">
+                                                                <i class="bi bi-dash-circle-fill cart-button-quantity-subtract-hover"
+                                                                   data-id="@entity.Product.Id"
+                                                                   style="font-size: 18px"></i>
+                                                                <p class="m-0 product-quantity-hover"
+                                                                   data-quantity="@entity.Quantity">@entity.Quantity</p>
+                                                                <i class="bi bi-plus-circle-fill cart-button-quantity-add-hover"
+                                                                   data-id="@entity.Product.Id"
+                                                                   style="font-size: 18px"></i>
+                                                            </div>
+                                                            <p class="m-0 product-price-hover ms-auto"
+                                                               data-initial-price="@entity.InitialPrice">@(entity.InitialPrice * entity.Quantity)</p>
+                                                        </div>
+                                                    }
+
+                                                    <div class="border-top w-100">
+                                                        <div class="mt-2 d-flex gap-1">
+                                                            <a class="btn btn-light border w-50" asp-action="Cart"
+                                                               asp-controller="Cart">Go to cart</a>
+                                                            <a class="btn btn-primary border w-50" asp-action="Checkout"
+                                                               asp-controller="Cart">Checkout</a>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                    </ul>
+                                </div>
+                            </li>
+                        </div>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-auto align-self-start">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".collapse"
+                        aria-controls="collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            <div class="col-auto w-100 flex-shrink-1 d-block d-md-block d-lg-none">
+                <form method="GET" asp-action="Search" asp-controller="Home">
+                    <li class="nav-item d-flex align-items-center search-bar">
+                        <i class="bi bi-search position-absolute ms-1"></i>
+                        <input type="text" name="searchString" class="form-control flex-grow-1"
+                               placeholder="Search any product...">
+                    </li>
+                </form>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container">
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+</div>
+
+<footer class="border-top footer text-muted">
+    <div class="container">
+        &copy; 2025 - PC Parts Store - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    </div>
+</footer>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+<script>
+    @{
+        var cart = Context.Session.GetComplexData<HashSet<CartViewModel>>("Cart");
+        int cartCount = 0;
+        if (SignInManager.IsSignedIn(User) == false && Context.Request.Cookies.ContainsKey("SessionData"))
+        {
+            Context.Response.Cookies.Delete("SessionData");
+            cartCount = 0;
+        }
+
+        if (cart != null)
+        {
+            cartCount = cart.Sum(p => p.Quantity);
+        }
+    }
+    let cartCount = @cartCount;
+    if (cartCount !== 0) {
+        $("#cart-products-count").text(cartCount);
+    }
+    if (cartCount === 0) {
+        $(".cart-dropdown .dropdown-menu").css("display", "none");
+    }
+</script>
+
+<script>
+    $(document).on("click", ".cart-button-quantity-subract-hover", function () {
+        let pressedButton = $(this);
+        let quantity = $(this).parent().find(".product-quantity-hover").data("quantity");
+        let initialPrice = $(this).parent().find(".product-price-hover").data("initial-price");
+        let cartItemContainer = $(this).parent().parent();
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("SubractProductQuantity", "Cart")",
+            data: {
+                id: $(this).data("id"),
+            },
+            success: function () {
+                $("cart-products-count").text(--cartCount);
+                $(pressedButton).parent().find(".product-quantity-hover").data("quantity", --quantity);
+                $(pressedButton).parent().find(".product-quantity-hover").attr("data-quantity", quantity);
+                $(pressedButton).parent().find(".product-quantity-hover").text(quantity);
+
+                $(pressedButton).parent().parent().find(".product-price-hover").text((initialPrice * quantity).toFixed(2));
+
+                if (quantity === 0) {
+                    $(cartItemContainer).remove();
+                }
+
+                if (cartCount === 0) {
+                    $("#cart-products-count").text("");
+                    $(".cart-dropdown .dropdown-menu").css("display", "none");
+                }
+            }
+        })
+    })
+
+    $(document).on("click", ".cart-button-quantity-add-hover", function () {
+        $(document).on("click", ".cart-button-quantity-add-hover", function () {
+            let pressedButton = $(this);
+            let quantity = $(this).parent().find(".product-quantity-hover").data("quantity");
+            let initialPrice = $(this).parent().parent().find(".product-price-hover").data("initial-price");
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("AddProductQuantity", "Cart")",
+                data: {
+                    id: $(this).data("id")
+                },
+                success: function () {
+                    $("#cart-products-count").text(++cartCount);
+
+                    $(pressedButton).parent().find(".product-quantity-hover").data("quantity", ++quantity);
+                    $(pressedButton).parent().find(".product-quantity-hover").attr("data-quantity", quantity);
+                    $(pressedButton).parent().find(".product-quantity-hover").text(quantity);
+
+                    $(pressedButton).parent().parent().find(".product-price-hover").text((initialPrice * quantity).toFixed(2));
+
+                    if (cartCount === 0) {
+                        $("#cart-products-count").text("");
+                        $(".cart-dropdown .dropdown-menu").css("display", "none");
+                    }
+                }
+            });
+        })
+    })
+</script>
+<script>
+    $(".main-menu").hover(function () {
+        $(".sub-menu").addClass("show");
+    })
+    $(".main-menu").on("mouseout", function () {
+        setTimeout(function () {
+            $(".sub-menu").removeClass("show");
+        }, 200);
+    })
+</script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

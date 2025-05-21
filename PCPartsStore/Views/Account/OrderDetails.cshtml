@@ -1,0 +1,81 @@
+﻿@model PCPartsStore.ViewModels.OrderHistoryDetailsViewModel;
+@{
+    ViewData["Title"] = "OrderDetails";
+}
+
+<div class="row flex-row">
+    <partial name="UserPageBase" view-data='@new ViewDataDictionary(ViewData) { { "PageTitle", ViewData["Title"] } }'/>
+    <div class="row col-lg-9 flex-sm-column flex-md-row d-flex justify-content-center">
+        <div class="col-md-10 col-sm-auto d-flex justify-content-between border rounded mb-5">
+            <div>
+                <span class="fw-bold">Personal info</span>
+                <div class="d-flex justify-content-center flex-column mt-1">
+                    <div>@Model.Recipient</div>
+                    <div>@Model.PhoneNumber</div>
+                </div>
+            </div>
+            <div>
+                <span class="fw-bold">Address</span>
+                <div class="d-flex justify-content-center flex-column mt-1">
+                    @Model.DeliveryAddress
+                </div>
+            </div>
+            <div>
+                <span class="fw-bold">Order date</span>
+                <div class="d-flex justify-content-center flex-column mt-1">
+                    @Model.OrderDate
+                </div>
+            </div>
+        </div>
+        <div class="row border border-1 col-md-10">
+            <table class="table">
+                <thead>
+                <tr class="text-end">
+                    <th scope="col" colspan="2"></th>
+                    <th scope="col" colspan="2">Single Product Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Total Price</th>
+                </tr>
+                </thead>
+                <tbody>
+                @{
+                    int i = 0;
+                    decimal? totalPrice = 0M;
+                    foreach (var entity in Model.Products)
+                    {
+                        <tr class="text-end">
+                            <td>
+                                <img src="@entity.ProductImage.ImagePath" width="100px" height="auto" style="object-fit: contain" class="d-flex ms-auto me-auto"/>
+                            </td>
+                            <td>@entity.Name</td>
+                            <td colspan="2">
+                                <div class="d-flex gap-2 justify-content-end">
+                                    <span>@entity.Price</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1 justify-content-end">
+                                    <span>@Model.ProductQuantities[i]</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1 justify-content-end">
+                                    <span>@(entity.Price * Model.ProductQuantities[i])</span>
+                                    @{totalPrice += entity.Price * Model.ProductQuantities[i];}
+                                </div>
+                            </td>
+                        </tr>
+                        i++;
+                    }
+                }
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-end fs-4 pe-0 mb-1">
+                <div class="text-end">
+                    <span class="me-3">Total Price:</span>
+                    <span class="text-decoration-underline fw-bold">@totalPrice</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

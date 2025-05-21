@@ -1,0 +1,215 @@
+﻿@model PCPartsStore.Entities.Product
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.min.css" rel="stylesheet">
+<div class="d-flex justify-content-center align-items-center add-product-container">
+    <form class="shadow-sm rounded bg-white" enctype="multipart/form-data" id="edit-product-form">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="mb-3">
+            <div>
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+            <label asp-for="Id" class="form-label"></label>
+            <input asp-for="Id" class="form-control" readonly>
+        </div>
+        <div class="mb-3">
+            <div>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control">
+        </div>
+        <div class="mb-3">
+            <div>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <label asp-for="Description" class="form-label"></label>
+            <input asp-for="Description" class="form-control" type="hidden">
+            <div id="editor">
+            </div>
+        </div>
+        <div class="mb-3">
+            <div>
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <label asp-for="Price" class="form-label"></label>
+            <input asp-for="Price" class="form-control">
+        </div>
+        <div class="mb-3">
+            <div>
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+            <label asp-for="Quantity" class="form-label"></label>
+            <input asp-for="Quantity" class="form-control">
+        </div>
+        <div class="mb-3">
+            <div>
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
+            <label asp-for="Image" class="form-label"></label>
+            <input asp-for="Image" class="form-control" id="imageUpload" accept=".png, .jpg">
+        </div>
+        <div class="mb-3 image-upload-preview border border-1 d-flex">
+            <img id="uploaded-file-image" src="@Model.ProductImage.ImagePath">
+            <div class="d-flex flex-column align-self-start mt-3 image-actions">
+                <button type="button" class="bi bi bi-x-circle text-white btn btn-danger"></button>
+            </div>
+        </div>
+        <div class="mb-3">
+            <div>
+                <span asp-validation-for="ProductCategoryId" class="text-danger"></span>
+            </div>
+            <label asp-for="ProductCategoryId" class="form-label"></label>
+            <select class="form-select" asp-for="ProductCategoryId" asp-items="@((IEnumerable<SelectListItem>)ViewData["ProductCategories"])"></select>
+        </div>
+        <button id="button-edit" type="button" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.min.js"></script>
+    <script>
+        let quill = new Quill('#editor', {
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline'],
+                    [{ 'list': 'bullet' }],
+                    [{ 'indent': '+1'}, { 'indent': '-1'}],
+                    ['clean']
+                ],
+            },
+            theme: 'snow'
+        });
+
+        function handleSubmit(){
+            let description = document.querySelector("input[name=Description]");
+            description.value = quill.root.innerHTML;
+        }
+        let description = document.querySelector("input[name=Description]");
+        if (description.value != null){
+            quill.root.innerHTML = description.value;
+        }
+        document.querySelector(".bi-x-circle").style.display = "none";
+        let imageUpload = document.querySelector("#imageUpload");
+        if (imageUpload.getAttribute("src") !== ""){
+            document.querySelector(".bi-x-circle").style.display = "inline";
+            let image = document.querySelector("#uploaded-file-image");
+            let container = document.querySelector(".image-upload-preview");
+            if (window.matchMedia("(max-width: 1000px)").matches){
+                image.style.width = "100px";
+                image.style.height = "120px";
+                container.style.width = "150px";
+                container.style.height = "120px";
+            }
+            else{
+                image.style.width = "190px";
+                image.style.height = "145px";
+                container.style.width = "calc(190px + 3em)";
+                container.style.height = "150px";
+            }
+            window.onresize = function (){
+                if (window.matchMedia("(max-width: 1000px)").matches){
+                    image.style.width = "100px";
+                    image.style.height = "120px";
+                    container.style.width = "150px";
+                    container.style.height = "120px";
+                }
+                else{
+                    image.style.width = "190px";
+                    image.style.height = "145px";
+                    container.style.width = "calc(190px + 3em)";
+                    container.style.height = "150px";
+                }
+            }
+        }
+        imageUpload.addEventListener("change", function (){
+            if (imageUpload.files.length === 0){
+                document.querySelector(".bi-x-circle").style.display = "none";
+                return false;
+            }
+            else{
+                document.querySelector(".bi-x-circle").style.display = "inline";
+            }
+            let image = document.querySelector("#uploaded-file-image");
+            image.src = URL.createObjectURL(this.files[0]);
+            image.style.visibility = "visible";
+            let container = document.querySelector(".image-upload-preview");
+            if (window.matchMedia("(max-width: 1000px)").matches){
+                image.style.width = "100px";
+                image.style.height = "120px";
+                container.style.width = "150px";
+                container.style.height = "120px";
+            }
+            else{
+                image.style.width = "190px";
+                image.style.height = "145px";
+                container.style.width = "calc(190px + 3em)";
+                container.style.height = "150px";
+            }
+            window.onresize = function (){
+                if (window.matchMedia("(max-width: 1000px)").matches){
+                    image.style.width = "100px";
+                    image.style.height = "120px";
+                    container.style.width = "160px";
+                    container.style.height = "120px";
+                }
+                else{
+                    image.style.width = "190px";
+                    image.style.height = "145px";
+                    container.style.width = "100%";
+                    container.style.height = "5em";
+                }
+            }
+        });
+        document.querySelector(".bi-x-circle").addEventListener("click", function (){
+            imageUpload.value = "";
+            let image = document.querySelector("#uploaded-file-image");
+            image.removeAttribute('src');
+            image.style.visibility = "hidden";
+            document.querySelector(".bi-x-circle").style.display = "none";
+            let container = document.querySelector(".image-upload-preview");
+            container.style.width = "100%";
+            container.style.height = "5em";
+        });
+        $(document).ready(function () {
+            if ($('#uploaded-file-image').attr('src')!==""){
+                $("#imageUpload").rules("remove", "required");
+            }
+            $(".bi-x-circle").on("click", function (){
+                $("#imageUpload").rules("add", "required");
+            });
+        });
+    </script>
+
+    <script>
+        //console.log($("#imageUpload").valid());
+        let formData = new FormData();
+        let buttonEdit = $("#button-edit");
+        buttonEdit.on("click", function (){
+            handleSubmit();
+            if ($("#edit-product-form").valid()){
+                formData.append("formData", $("#edit-product-form").serialize());
+                formData.append("image", $("#imageUpload")[0].files[0]);
+                $.ajax({
+                    type: "PATCH",
+                    url: "@Url.Action("Edit")",
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    success: function (res){
+                        window.location.href = res;
+                    },
+                    error: function (res){
+                        window.location.href = JSON.parse(res.responseText);
+                    }
+                });
+            }
+        });
+    </script>
+}

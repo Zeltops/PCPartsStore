@@ -1,0 +1,61 @@
+﻿@model PCPartsStore.Models.Account.RegisterModel;
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h1 class="text-center">Register</h1>
+
+@* <div class="register-sliding-image-container-first"> *@
+@*     <div class="sliding-image-normal"></div> *@
+@* </div> *@
+@* *@
+@* <div class="register-sliding-image-container-second"> *@
+@*     <div class="sliding-image-reverse"></div> *@
+@* </div> *@
+@* *@
+@* <div class="register-sliding-image-container-third"> *@
+@*     <div class="sliding-image-normal"></div> *@
+@* </div> *@
+
+<div class="d-flex justify-content-center align-items-center mt-4" id="register-container">
+    <form class="shadow-sm rounded bg-white" method="post" id="register-form">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="mb-3">
+            <div>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" class="form-control">
+        </div>
+        <div class="mb-3">
+            <div>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <label asp-for="Password" class="form-label"></label>
+            <div class="input-group">
+                <input asp-for="Password" class="form-control password">
+                <div class="d-flex justify-content-end">
+                    <button class="bi-eye-fill position-absolute btn btn-link text-dark shadow-none password-icon" tabindex="-1" type="button"></button>
+                </div>
+            </div>
+        </div>
+        <div class="mb-4">
+            <div>
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            <label asp-for="ConfirmPassword" class="form-label"></label>
+            <div class="input-group">
+                <input asp-for="ConfirmPassword" class="form-control password">
+                <div class="d-flex justify-content-end">
+                    <button class="bi-eye-fill position-absolute btn btn-link text-dark shadow-none password-icon" tabindex="-1" type="button"></button>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Register</button>
+    </form>
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial"/>
+}
