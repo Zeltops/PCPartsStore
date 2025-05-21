@@ -64,7 +64,19 @@ public class CartController : Controller
     [HttpPost]
     public IActionResult AddProductQuantity(int id)
     {
+        var cart = HttpContext.Session.GetComplexData<HashSet<CartViewModel>>("Cart");
+        var cartItem = cart.FirstOrDefault(c => c.Product.Id == id);
+        var product = _dbContext.Products.FirstOrDefault(p => p.Id == id);
+
+        if (cartItem == null || product == null)
+            return BadRequest("Invalid product.");
+
+        if (cartItem.Quantity >= product.Quantity)
+            return BadRequest("Cannot exceed available stock.");
+
+        // safe to add
         _cartService.AddQuantity(id);
+
         var model = HttpContext.Session.GetComplexData<HashSet<CartViewModel>>("Cart");
         foreach (var entity in model)
             entity.Product.ProductImage =

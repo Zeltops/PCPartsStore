@@ -29,7 +29,19 @@
                             <div class="d-flex gap-2 justify-content-end">
                                 <i class="bi bi-dash-circle-fill cart-button-quantity-subtract" data-id="@entity.Product.Id" style="font-size: 18px"></i>
                                 <span>@entity.Quantity</span>
-                                <i class="bi bi-plus-circle-fill cart-button-quantity-add" data-id="@entity.Product.Id" style="font-size: 18px"></i>
+
+                                @if (entity.Quantity >= entity.Product.Quantity)
+                                {
+                                    <i class="bi bi-plus-circle-fill text-muted" 
+                                       title="Max stock reached" 
+                                       style="font-size: 18px; opacity: 0.5; pointer-events: none;"></i>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-plus-circle-fill cart-button-quantity-add" 
+                                       data-id="@entity.Product.Id" 
+                                       style="font-size: 18px"></i>
+                                }
                             </div>
                         </td>
                         <td>
