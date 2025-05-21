@@ -326,34 +326,31 @@
     })
 
     $(document).on("click", ".cart-button-quantity-add-hover", function () {
-        $(document).on("click", ".cart-button-quantity-add-hover", function () {
-            let pressedButton = $(this);
-            let quantity = $(this).parent().find(".product-quantity-hover").data("quantity");
-            let initialPrice = $(this).parent().parent().find(".product-price-hover").data("initial-price");
+        let pressedButton = $(this);
+        let quantity = pressedButton.parent().find(".product-quantity-hover").data("quantity");
+        let initialPrice = pressedButton.closest(".cart-item").find(".product-price-hover").data("initial-price");
 
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("AddProductQuantity", "Cart")",
-                data: {
-                    id: $(this).data("id")
-                },
-                success: function () {
-                    $("#cart-products-count").text(++cartCount);
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("AddProductQuantity", "Cart")",
+            data: {
+                id: pressedButton.data("id")
+            },
+            success: function () {
+                cartCount++;
+                $("#cart-products-count").text(cartCount);
 
-                    $(pressedButton).parent().find(".product-quantity-hover").data("quantity", ++quantity);
-                    $(pressedButton).parent().find(".product-quantity-hover").attr("data-quantity", quantity);
-                    $(pressedButton).parent().find(".product-quantity-hover").text(quantity);
+                quantity++;
+                pressedButton.parent().find(".product-quantity-hover")
+                    .data("quantity", quantity)
+                    .attr("data-quantity", quantity)
+                    .text(quantity);
 
-                    $(pressedButton).parent().parent().find(".product-price-hover").text((initialPrice * quantity).toFixed(2));
-
-                    if (cartCount === 0) {
-                        $("#cart-products-count").text("");
-                        $(".cart-dropdown .dropdown-menu").css("display", "none");
-                    }
-                }
-            });
-        })
-    })
+                pressedButton.closest(".cart-item").find(".product-price-hover")
+                    .text((initialPrice * quantity).toFixed(2));
+            }
+        });
+    });
 </script>
 <script>
     $(".main-menu").hover(function () {
